@@ -1,6 +1,8 @@
-import subprocess
-import pandas as pd
 import re
+import subprocess
+
+import pandas as pd
+
 
 def ping(host):
     result = subprocess.run(['ping','-n', '3', host],capture_output=True,text=True,encoding='cp866')
@@ -28,9 +30,7 @@ def take_data(line,data):
 
 
 arr = ["google.com", "ya.ru", "e.mail.ru", "chat.deepseek.com","github.com",
-       "youtube.com", "vk.com", "leetcode.com", "classroom.google.com", "my.cdek.ru"]
-
-# arr = ["google.com"]
+       "youtube.com", "vk.com", "leetcode.com", "classroom.google.com", "www.ozon.ru"]
 
 data={
     "домен" : [],
