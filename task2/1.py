@@ -1,3 +1,4 @@
+import os
 import time
 import csv
 
@@ -8,6 +9,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 
+MAIL=os.getenv("MAIL")
+PASSWORD=os.getenv("PASSWORD")
 
 options = Options()
 options.add_argument('--headless')
@@ -27,10 +30,10 @@ input_button = wait.until(EC.element_to_be_clickable(('xpath','//span[text()="В
 input_button.click()
 
 mail_field = wait.until(EC.element_to_be_clickable(('xpath', '//input[@name="USER_EMAIL"]')))
-mail_field.send_keys("artem.rt2020@mail.ru")
+mail_field.send_keys(MAIL)
 
 password_field = wait.until(EC.element_to_be_clickable(('xpath', '//input[@name="USER_PASSWORD"]')))
-password_field.send_keys("popapopa")
+password_field.send_keys(PASSWORD)
 
 enter_button = wait.until(EC.element_to_be_clickable(('xpath', '//input[@name="Login"]')))
 enter_button.click()
