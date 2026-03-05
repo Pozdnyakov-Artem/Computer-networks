@@ -1,6 +1,6 @@
+import csv
 import os
 import time
-import csv
 
 from dotenv import load_dotenv
 from selenium import webdriver
@@ -61,8 +61,6 @@ data = {
     "ссылка":[]
 }
 
-# array_with_data = driver.find_element("xpath",'//article')
-# print(array_with_data.text)
 number_page = 2
 
 while f"PAGEN_1={number_page+1}" not in driver.current_url:
