@@ -1,7 +1,7 @@
 import os
 from typing import List
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.params import Depends
 from sqlalchemy import create_engine, Column, String, Integer, text
 from sqlalchemy.ext.declarative import declarative_base
@@ -50,7 +50,7 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/parse",tags=["Запуск selenium"])
+@app.post("/parse",tags=["Запуск selenium"])
 def parse(db: Session = Depends(get_db)):
 
     try:
@@ -61,7 +61,7 @@ def parse(db: Session = Depends(get_db)):
         return {"success": True, "Error": None}
     except Exception as e:
         db.rollback()
-        return {"success": False, "Error": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/get_data", tags=["Получить всю информацию"], response_model=List[BookResponse])
 def get_data_from_db(db: Session = Depends(get_db)):
@@ -73,29 +73,22 @@ def get_data_from_db(db: Session = Depends(get_db)):
     except Exception as e:
         return {"success": False, "Error": str(e)}
 
-@app.get("/clear_tables", tags=["Пересоздание таблицы"])
-def reset_database():
+@app.delete("/clear_tables", tags=["Пересоздание таблицы"])
+def reset_database(db: Session = Depends(get_db)):
     try:
         Base.metadata.drop_all(bind=engine)
         Base.metadata.create_all(bind=engine)
+        db.commit()
         return {"success": True, "Error": None}
     except Exception as e:
-        return {"success": False, "Error": str(e)}
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/clear_data", tags=["Очистка данных"])
-def clear_data():
+@app.delete("/clear_data", tags=["Очистка данных"])
+def clear_data(db: Session = Depends(get_db)):
     try:
-        with engine.connect() as conn:
-            with conn.begin():
-                conn.execute(text("""
-                    DO $$ DECLARE
-                        r RECORD;
-                    BEGIN
-                        FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public') LOOP
-                            EXECUTE 'TRUNCATE TABLE public.' || quote_ident(r.tablename) || ' RESTART IDENTITY CASCADE';
-                        END LOOP;
-                    END $$;
-                """))
+        db.query(Book).delete()
+        db.commit()
         return {"success": True, "Error": None}
     except Exception as e:
-        return {"success": False, "Error": str(e)}
+        raise HTTPException(status_code=500, detail=str(e))
