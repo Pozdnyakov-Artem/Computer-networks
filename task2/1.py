@@ -2,12 +2,15 @@ import os
 import time
 import csv
 
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.edge.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
+
+load_dotenv()
 
 MAIL=os.getenv("MAIL")
 PASSWORD=os.getenv("PASSWORD")
@@ -58,6 +61,8 @@ data = {
     "ссылка":[]
 }
 
+# array_with_data = driver.find_element("xpath",'//article')
+# print(array_with_data.text)
 number_page = 2
 
 while f"PAGEN_1={number_page+1}" not in driver.current_url:
@@ -67,9 +72,9 @@ while f"PAGEN_1={number_page+1}" not in driver.current_url:
         text = data_about_book.text.split('\n')
 
         data["скидка"].append(text[0][1:] if '%' in text[0] else None)
-        data["тип"].append(text[1] if '%' in text[0] else text[0])
-        data["бренд"].append(text[2] if '%' in text[0] else text[1])
-        data["цена"].append("".join(text[3].split()[-3:-1]) if '%' in text[0] else "".join(text[2].split()[-3:-1]))
+        data["тип"].append(text[1] if '%' in text[0] or text[0] == "НОВИНКА" else text[0])
+        data["бренд"].append(text[2] if '%' in text[0] or text[0] == "НОВИНКА" else text[1])
+        data["цена"].append("".join(text[3].split()[-3:-1]) if '%' in text[0] or text[0] == "НОВИНКА" else "".join(text[2].split()[-3:-1]))
 
         link_element = data_about_book.find_element('xpath', './/a[@class="unproduct-image-link"]')
         url = link_element.get_attribute("href")
