@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:15
+    env_file:
+      - ./.env
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    networks: 
+      - my-network
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile.web
+    env_file:
+      - ./.env
+    ports:
+      - "8080:8000"
+    networks: 
+      - my-network
+    depends_on:
+      - db
+    restart: on-failure  # Перезапускать при ошибке
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s        # Ждать 5 секунд перед перезапуском
+        max_attempts: 3  # Максимум 3 попытки
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports: 
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./GeoLite2-Country_20260317/GeoLite2-Country.mmdb:/usr/share/GeoIP/GeoLite2-Country.mmdb:ro
+    networks:
+      - my-network
+    depends_on:
+      - backend
+
+networks:
+  my-network:
+    driver: bridge
