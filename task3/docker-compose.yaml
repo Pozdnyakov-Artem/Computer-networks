@@ -21,12 +21,12 @@ services:
       - my-network
     depends_on:
       - db
-    restart: on-failure  # Перезапускать при ошибке
+    restart: on-failure
     deploy:
       restart_policy:
         condition: on-failure
-        delay: 5s        # Ждать 5 секунд перед перезапуском
-        max_attempts: 3  # Максимум 3 попытки
+        delay: 5s
+        max_attempts: 3
 
   nginx:
     build:
