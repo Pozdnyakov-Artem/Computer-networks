@@ -30,16 +30,14 @@ data={
     }
 
 def add_to_data(domen, ip, ip_version, route):
-    # print(len(route))
     bias = 0 if ip_version == "v4" else 1
     route = route.splitlines() #[:-1]
-    # print(route)
+
     for idx, line in enumerate(route):
         if idx == 0 or line.count('*') == 3:
             continue
         line = line.split()
         line = [word for word in line if word != "ms"]
-        print(idx, line)
         data["домен"].append(domen)
         data["ip_версия"].append(ip_version)
         data["ip для traceroute"].append(ip)
