@@ -15,7 +15,8 @@ arr = ["google.com", "ya.ru", "e.mail.ru", "chat.deepseek.com","github.com",
 
 for host in arr:
     ipv4, code_ipv4, ipv6, code_ipv6 = dig(host)
-    print(ipv4, ipv6)
+    print(f"v4 for{host}",ipv4)
+    print(f"v6 for{host}", ipv6)
 
 
 # df = pd.DataFrame(data)
