@@ -20,18 +20,30 @@ def traceroute6(ip_v6):
 #        "youtube.com", "vk.com", "leetcode.com", "classroom.google.com", "www.ozon.ru"]
 arr = ["google.com"]
 
+data={
+    "домен" : [],
+    "ip для traceroute" : [],
+    "ip узла" : [],
+    "время первого запроса" : [],
+    "время второго запроса" : [],
+    "время третьего запроса" : []
+    }
+
+
 for host in arr:
     ipv4, code_ipv4, ipv6, code_ipv6 = dig(host)
     # print(f"v4 for{host}",ipv4)
     # print(f"v6 for{host}", ipv6)
     if not code_ipv4 and ipv4:
         for ip in ipv4:
-            route, code = traceroute(ip)
-            print(route)
+            print(ip)
+            # route, code = traceroute(ip)
+            # print(route)
     if not code_ipv6 and ipv6:
         for ip in ipv6:
-            route, code = traceroute6(ip)
-            print(route)
+            print(ip)
+            # route, code = traceroute6(ip)
+            # print(route)
 
 
 # df = pd.DataFrame(data)
